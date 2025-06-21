@@ -56,7 +56,7 @@ function filterTodos(filter) {
     
     // 필터 버튼 활성화 상태 업데이트
     filterButtons.forEach(btn => {
-        if (btn.textContent.toLowerCase() === filter) {
+        if (btn.dataset.filter === filter) {
             btn.classList.add('active');
         } else {
             btn.classList.remove('active');
@@ -139,6 +139,7 @@ document.addEventListener('mousedown', (e) => {
     if (e.target.classList.contains('todo-item')) {
         draggedItem = e.target;
         e.target.style.opacity = '0.5';
+        handleDragStart(e);
     }
 });
 
@@ -155,8 +156,7 @@ document.addEventListener('mouseup', (e) => {
     if (draggedItem) {
         draggedItem.style.opacity = '1';
         draggedItem.style.position = 'static';
-        draggedItem = null;
-        
+
         // 드롭 위치에 따라 할 일 순서 변경 (간단한 예시)
         // 실제로는 더 복잡한 로직이 필요할 수 있음
         const afterElement = getDragAfterElement(todoList, e.clientY);
@@ -166,6 +166,9 @@ document.addEventListener('mouseup', (e) => {
         } else {
             todoList.insertBefore(todoElement, afterElement);
         }
+
+        handleDragEnd({ target: draggedItem });
+        draggedItem = null;
     }
 });
 
